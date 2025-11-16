@@ -25,3 +25,7 @@ calendar_filter: []
 show_calendar_name: true   # Show which calendar each event is from
 show_location: true        # Show event location
 show_notes: false          # Show event notes/description
+
+# Context note for AI assistants (appears at top of calendar note)
+# This helps AI understand the nature of the calendar items
+context_note: "Note: This calendar includes events from multiple family members. Some events belong to children or other family members and may not be direct commitments for the primary user."

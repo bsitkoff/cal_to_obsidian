@@ -153,6 +153,12 @@ class CalendarExporter:
             "",
         ]
 
+        # Add context note if configured
+        context_note = self.config.get('context_note', '')
+        if context_note:
+            md_lines.append(f"> {context_note}")
+            md_lines.append("")
+
         if not events:
             md_lines.append("No events scheduled for today.")
         else:

@@ -136,6 +136,8 @@ Your "Today's Calendar.md" will look like:
 
 *Last updated: 09:00 AM*
 
+> Note: This calendar includes events from multiple family members. Some events belong to children or other family members and may not be direct commitments for the primary user.
+
 **3 event(s) scheduled:**
 
 - **09:00 AM - 10:00 AM** | Team Standup *(Work)*
@@ -144,6 +146,8 @@ Your "Today's Calendar.md" will look like:
 - **06:00 PM - 07:00 PM** | Dinner with Friends *(Personal)*
   - 📍 Italian Restaurant
 ```
+
+The context note at the top helps AI assistants understand that not all events may be direct commitments for you. You can customize or remove this note in `config.yaml`.
 
 ## Calendar Set Configuration
 
@@ -215,6 +219,21 @@ calendar_note_name: "%Y-%m-%d-Calendar.md"  # Creates: 2025-11-16-Calendar.md
 ### Add more event details
 
 Set `show_notes: true` in config.yaml to include event descriptions.
+
+### Customize the context note for AI assistants
+
+Edit `context_note` in `config.yaml` to help AI assistants understand your calendar:
+
+```yaml
+# Example: Emphasize that some events are informational only
+context_note: "Note: This calendar includes family events and subscribed calendars. Not all events require my direct involvement."
+
+# Example: Explain calendar categories
+context_note: "Context for AI: Events from 'Kids School' and 'Family' calendars are for awareness. Only 'Work' and 'Personal' are my direct commitments."
+
+# Leave empty to hide the note
+context_note: ""
+```
 
 ## License
 
