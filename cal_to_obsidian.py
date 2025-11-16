@@ -197,8 +197,63 @@ class CalendarExporter:
         return note_path
 
 
+def parse_date_arg(date_str):
+    """Parse date argument into datetime object."""
+    if not date_str:
+        return None
+
+    # Handle special keywords
+    if date_str.lower() == "today":
+        return datetime.now()
+    elif date_str.lower() == "tomorrow":
+        return datetime.now() + timedelta(days=1)
+    elif date_str.lower() == "yesterday":
+        return datetime.now() - timedelta(days=1)
+
+    # Handle relative days (+1, -1, etc.)
+    if date_str.startswith('+') or date_str.startswith('-'):
+        try:
+            days = int(date_str)
+            return datetime.now() + timedelta(days=days)
+        except ValueError:
+            pass
+
+    # Try parsing as date in various formats
+    for fmt in ['%Y-%m-%d', '%m/%d/%Y', '%m-%d-%Y', '%Y/%m/%d']:
+        try:
+            return datetime.strptime(date_str, fmt)
+        except ValueError:
+            continue
+
+    raise ValueError(f"Could not parse date: {date_str}")
+
+
 def main():
     """Main entry point."""
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Export calendar events to Obsidian",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  ./cal_to_obsidian.py                    # Export today's calendar
+  ./cal_to_obsidian.py --date tomorrow    # Export tomorrow's calendar
+  ./cal_to_obsidian.py --date yesterday   # Export yesterday's calendar
+  ./cal_to_obsidian.py --date +3          # Export 3 days from now
+  ./cal_to_obsidian.py --date 2025-11-17  # Export specific date
+  ./cal_to_obsidian.py -d 11/17/2025      # Also works with MM/DD/YYYY
+        """
+    )
+
+    parser.add_argument(
+        '-d', '--date',
+        type=str,
+        help='Date to export (today, tomorrow, yesterday, +N, -N, YYYY-MM-DD, MM/DD/YYYY)'
+    )
+
+    args = parser.parse_args()
+
     # Check for config file
     config_path = "config.yaml"
     if not os.path.exists(config_path):
@@ -212,10 +267,19 @@ def main():
             print("Error: config.example.yaml not found!")
             sys.exit(1)
 
+    # Parse date argument
+    try:
+        target_date = parse_date_arg(args.date) if args.date else None
+        if target_date:
+            print(f"📅 Exporting calendar for: {target_date.strftime('%A, %B %d, %Y')}")
+    except ValueError as e:
+        print(f"❌ {e}")
+        sys.exit(1)
+
     # Run export
     try:
         exporter = CalendarExporter(config_path)
-        exporter.export_to_obsidian()
+        exporter.export_to_obsidian(date=target_date)
     except Exception as e:
         print(f"❌ Error: {e}")
         import traceback

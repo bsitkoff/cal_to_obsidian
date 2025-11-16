@@ -88,6 +88,32 @@ This will run the export at:
 ./cal_to_obsidian.py
 ```
 
+### Test with Different Dates
+
+You can export calendars for any date using the `--date` or `-d` flag:
+
+```bash
+# Tomorrow's calendar
+./cal_to_obsidian.py --date tomorrow
+
+# Yesterday's calendar
+./cal_to_obsidian.py --date yesterday
+
+# 3 days from now
+./cal_to_obsidian.py --date +3
+
+# Specific date (YYYY-MM-DD)
+./cal_to_obsidian.py --date 2025-11-17
+
+# Also supports MM/DD/YYYY
+./cal_to_obsidian.py -d 11/17/2025
+
+# View all options
+./cal_to_obsidian.py --help
+```
+
+Perfect for testing before you set up automation!
+
 ### Check Automation Logs
 
 ```bash
