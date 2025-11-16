@@ -249,6 +249,7 @@ Examples:
   ./cal_to_obsidian.py --date +3          # Export 3 days from now
   ./cal_to_obsidian.py --date 2025-11-17  # Export specific date
   ./cal_to_obsidian.py -d 11/17/2025      # Also works with MM/DD/YYYY
+  ./cal_to_obsidian.py --list-calendars   # Show all available calendars
         """
     )
 
@@ -256,6 +257,12 @@ Examples:
         '-d', '--date',
         type=str,
         help='Date to export (today, tomorrow, yesterday, +N, -N, YYYY-MM-DD, MM/DD/YYYY)'
+    )
+
+    parser.add_argument(
+        '--list-calendars',
+        action='store_true',
+        help='List all available calendars and exit'
     )
 
     args = parser.parse_args()
@@ -271,6 +278,44 @@ Examples:
             sys.exit(0)
         else:
             print("Error: config.example.yaml not found!")
+            sys.exit(1)
+
+    # Handle list-calendars command
+    if args.list_calendars:
+        try:
+            store = EKEventStore.alloc().init()
+            store.requestAccessToEntityType_completion_(
+                EKEntityTypeEvent,
+                lambda granted, error: None
+            )
+
+            calendars = store.calendarsForEntityType_(EKEntityTypeEvent)
+
+            print("📅 Available Calendars:")
+            print("=" * 60)
+
+            for cal in calendars:
+                print(f"\nCalendar: {cal.title()}")
+                print(f"  Type: {cal.type()}")
+                print(f"  Color: {cal.color()}")
+                print(f"  Source: {cal.source().title()}")
+
+                # Check if calendar has a specific account email
+                source = cal.source()
+                if hasattr(source, 'externalID'):
+                    print(f"  Account: {source.externalID()}")
+
+            print("\n" + "=" * 60)
+            print("\nTo filter calendars, add them to 'calendar_filter' in config.yaml:")
+            print("calendar_filter:")
+            for cal in calendars:
+                print(f'  - "{cal.title()}"')
+
+            sys.exit(0)
+        except Exception as e:
+            print(f"❌ Error listing calendars: {e}")
+            import traceback
+            traceback.print_exc()
             sys.exit(1)
 
     # Parse date argument

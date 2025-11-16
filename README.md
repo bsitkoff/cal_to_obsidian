@@ -156,16 +156,28 @@ The context note at the top helps AI assistants understand that not all events m
 1. Accessing all calendars via EventKit (the same data Fantastical uses)
 2. Optionally filtering by specific calendar names
 
-To filter for your "Bridget" calendar set:
+### Finding Your Calendar Names
 
-1. Open Fantastical
-2. Note which calendars are in your "Bridget" set
-3. Add them to `calendar_filter` in `config.yaml`:
+Use the `--list-calendars` flag to see all available calendars:
+
+```bash
+./cal_to_obsidian.py --list-calendars
+```
+
+This will show you:
+- Calendar names (exact spelling needed for filtering)
+- Calendar types
+- Source accounts (helpful for identifying work vs. personal)
+
+### Filtering Calendars
+
+To filter for your "Bridget" calendar set, add the specific calendar names to `calendar_filter` in `config.yaml`:
 
 ```yaml
 calendar_filter:
   - "Work"
-  - "Personal"
+  - "bridget_sitkoff@milton.edu"
+  - "Kids School"
   - "Family Shared"
 ```
 
