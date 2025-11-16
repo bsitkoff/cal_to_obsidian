@@ -36,12 +36,35 @@ class CalendarExporter:
             return yaml.safe_load(f)
 
     def request_calendar_access(self):
-        """Request access to calendar data."""
-        # Note: On first run, this will prompt user for permission
-        self.store.requestAccessToEntityType_completion_(
-            EKEntityTypeEvent,
-            lambda granted, error: None
+        """Check calendar access authorization status."""
+        from EventKit import (
+            EKAuthorizationStatusAuthorized,
+            EKAuthorizationStatusDenied,
+            EKAuthorizationStatusRestricted,
+            EKAuthorizationStatusNotDetermined
         )
+
+        status = self.store.authorizationStatusForEntityType_(EKEntityTypeEvent)
+
+        # Map status codes to readable strings
+        status_map = {
+            EKAuthorizationStatusNotDetermined: "not determined",
+            EKAuthorizationStatusRestricted: "restricted",
+            EKAuthorizationStatusDenied: "denied",
+            EKAuthorizationStatusAuthorized: "authorized"
+        }
+
+        status_str = status_map.get(status, "unknown")
+
+        if status != EKAuthorizationStatusAuthorized:
+            print(f"⚠️  Calendar access is {status_str}")
+            if status == EKAuthorizationStatusNotDetermined:
+                print("Please run this script manually first to grant calendar permissions.")
+                print("When running from automation, permissions must already be granted.")
+            elif status == EKAuthorizationStatusDenied:
+                print("Calendar access denied. Check System Settings → Privacy & Security → Calendars")
+
+        return status == EKAuthorizationStatusAuthorized
 
     def get_calendar_set_calendars(self, set_name):
         """Get all calendars in a specific calendar set."""
@@ -283,11 +306,15 @@ Examples:
     # Handle list-calendars command
     if args.list_calendars:
         try:
+            from EventKit import EKAuthorizationStatusAuthorized
+
             store = EKEventStore.alloc().init()
-            store.requestAccessToEntityType_completion_(
-                EKEntityTypeEvent,
-                lambda granted, error: None
-            )
+            status = store.authorizationStatusForEntityType_(EKEntityTypeEvent)
+
+            if status != EKAuthorizationStatusAuthorized:
+                print("⚠️  Calendar access not authorized")
+                print("Please run the script once to grant calendar permissions first.")
+                sys.exit(1)
 
             calendars = store.calendarsForEntityType_(EKEntityTypeEvent)
 

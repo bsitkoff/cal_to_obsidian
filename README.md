@@ -57,17 +57,21 @@ show_location: true
 show_notes: false
 ```
 
-### 4. Test it
+### 4. Test it (IMPORTANT: Run manually first!)
+
+**You must run the script manually at least once before setting up automation:**
 
 ```bash
 ./cal_to_obsidian.py
 ```
 
+On first run, macOS will prompt you to grant calendar access. This is required!
+
 Check your Obsidian vault for "Today's Calendar.md"!
 
 ### 5. Set up automation (optional)
 
-To automatically update your calendar throughout the day:
+**Only after step 4 succeeds**, set up automatic updates throughout the day:
 
 ```bash
 chmod +x install_automation.sh
@@ -203,8 +207,12 @@ tccutil reset Calendar com.apple.Terminal
 - Check System Preferences → Security & Privacy → Calendar
 
 ### Script not running automatically
+- **Most common issue**: Did you run the script manually first to grant calendar permissions?
 - Check logs: `tail -f logs/error.log`
 - Verify launchd is loaded: `launchctl list | grep cal-to-obsidian`
+- If you see "pthread_exit" crashes in logs: Permissions weren't granted before automation was set up
+  - Run `./cal_to_obsidian.py` manually first
+  - Then reload automation: `launchctl unload ~/Library/LaunchAgents/com.user.cal-to-obsidian.plist && launchctl load ~/Library/LaunchAgents/com.user.cal-to-obsidian.plist`
 
 ## Customization
 
