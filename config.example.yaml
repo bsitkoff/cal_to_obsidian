@@ -1,0 +1,27 @@
+# Fantastical to Obsidian Configuration
+
+# Path to your Obsidian vault (use absolute path or ~/ for home directory)
+obsidian_vault_path: "~/Documents/Obsidian/MyVault"
+
+# Calendar note name (supports date formatting)
+# For a consistent name AI assistants can find, use:
+calendar_note_name: "Today's Calendar.md"
+
+# Or use a dated name:
+# calendar_note_name: "%Y-%m-%d-Calendar.md"
+
+# Calendar set name from Fantastical
+# Note: EventKit doesn't directly support Fantastical sets, so we filter by calendar names
+calendar_set: "Bridget"
+
+# Optional: Specific calendar names to include (leave empty to include all)
+# If you know the exact calendar names in your Bridget set, list them here
+calendar_filter: []
+  # - "Work"
+  # - "Personal"
+  # - "Family"
+
+# Display options
+show_calendar_name: true   # Show which calendar each event is from
+show_location: true        # Show event location
+show_notes: false          # Show event notes/description
