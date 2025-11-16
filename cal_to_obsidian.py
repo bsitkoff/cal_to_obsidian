@@ -41,10 +41,11 @@ class CalendarExporter:
             EKAuthorizationStatusAuthorized,
             EKAuthorizationStatusDenied,
             EKAuthorizationStatusRestricted,
-            EKAuthorizationStatusNotDetermined
+            EKAuthorizationStatusNotDetermined,
+            EKEventStore
         )
 
-        status = self.store.authorizationStatusForEntityType_(EKEntityTypeEvent)
+        status = EKEventStore.authorizationStatusForEntityType_(EKEntityTypeEvent)
 
         # Map status codes to readable strings
         status_map = {
@@ -306,10 +307,10 @@ Examples:
     # Handle list-calendars command
     if args.list_calendars:
         try:
-            from EventKit import EKAuthorizationStatusAuthorized
+            from EventKit import EKAuthorizationStatusAuthorized, EKEventStore
 
             store = EKEventStore.alloc().init()
-            status = store.authorizationStatusForEntityType_(EKEntityTypeEvent)
+            status = EKEventStore.authorizationStatusForEntityType_(EKEntityTypeEvent)
 
             if status != EKAuthorizationStatusAuthorized:
                 print("⚠️  Calendar access not authorized")
